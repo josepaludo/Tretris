@@ -1,0 +1,12 @@
+grid of 30(row)x20(col)
+tetris pieces are colored divs with 0 margin but can have a border
+background is black
+
+timed function that works everysecond
+    between the functions, player can input a diectional value (left, right)
+                                            or rotation(true)
+    when function ticks, checks if destination is clear or not
+                            if it is, move everypiece, then reset player input
+                                        (if don't reset player input 
+                                        unwanted moves will hapen)
+

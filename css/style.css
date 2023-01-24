@@ -1,0 +1,39 @@
+:root {
+    --black: rgba(3, 0, 28, 0.9);
+    --lightPurple: rgba(48, 30, 102, 0.9);
+    --lightBlue: rgba(91, 143, 185, 1);
+    --lightGreen: rgba(182, 234, 218, 0.9);
+}
+
+body {
+    background-Color: var(--lightPurple);
+    font-family: sans-serif;
+}
+button{
+    display: block;
+    margin: 100px auto;
+    border: 0;
+    border-radius: 3px;
+    font-size: 125%;
+    background-color: var(--lightGreen); 
+}
+div {
+    display: flex;
+    justify-content: center;
+}
+h1 {
+    font-size: 350%;
+    color: var(--lightBlue);
+}
+#tetrisContainerDiv {
+    margin: 50px auto;
+    display: grid;
+    height: 700px;
+    width: 400px;
+    grid-template-columns: repeat(10, 1fr);
+}
+.tetrisBodyDiv {
+    background-color: var(--black);
+    border: outset;
+}
+
