@@ -29,11 +29,10 @@ h1 {
     margin: 50px auto;
     display: grid;
     height: 700px;
-    width: 400px;
+    width: 350px;
     grid-template-columns: repeat(10, 1fr);
 }
 .tetrisBodyDiv {
-    background-color: var(--black);
     border: outset;
 }
 
