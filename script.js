@@ -5,7 +5,7 @@ let letterI = {
 }
 
 let letterO = {
-    color: "fushsia",
+    color: "green",
     coords: [[0, 0], [0, 1], [1, 0], [1, 1]],
 }
 
@@ -37,6 +37,8 @@ let letterT = {
 let GLOBAL_MATRIX = [];
 let DEFAULT_COLOR = "black";
 let PIECE_PARAMETERS = [letterT, letterL, letterS, letterJ, letterI, letterO, letterZ];
+let DIRECTION = 0;
+// 0 = down, 1 = left, 2 = right
 
 
 // Game start
@@ -44,6 +46,7 @@ let PIECE_PARAMETERS = [letterT, letterL, letterS, letterJ, letterI, letterO, le
 function startGameFunction() {
     createTetrisGrid();
     deleteStartButton();
+    listenToArrows();
     gameLoop();
 }
 
@@ -75,7 +78,7 @@ function deleteStartButton() {
 function tryToPlacePieceAtStart(pieceParam)
 {
     let piece = Object.create(pieceParam);
-    let col = getRandomInt(10);
+    let col = 1+getRandomInt(6);
 
     if (canBePlacedInSquare(piece, 0, col)) {
         placePieceOnMatrix(piece, 0, col);
@@ -132,15 +135,27 @@ function areRowAndColInRange(row, col) {
 }
 
 function makePieceMove(piece) {
-    timedFunction(makeOneMove, piece, 100, 22, gameLoop);
+    timedFunction(makeOneMove, piece, 500, 22, gameLoop);
 }
 
-function makeOneMove(piece) {
+function makeOneMove(piece)
+{
+    if (DIRECTION === 0) {
+        return checkDestinationAndMakeMove(piece, 0, false);
+    } else if (DIRECTION === 1) {
+        return checkDestinationAndMakeMove(piece, -1, true);
+    } else if (DIRECTION === 2) {
+        return checkDestinationAndMakeMove(piece, 1, true);
+    }
+}
 
+function checkDestinationAndMakeMove(piece, colAdd, isFirstTry)
+{
+    DIRECTION = 0;
     let currentRow = piece.currentCoord[0];
     let currentCol = piece.currentCoord[1];
     let nextRow = currentRow + 1;
-    let nextCol = currentCol;
+    let nextCol = currentCol + colAdd;
 
     eraseCurrentOccupiedSpace(piece, currentRow, currentCol);
     if (canBePlacedInSquare(piece, nextRow, nextCol))
@@ -149,8 +164,13 @@ function makeOneMove(piece) {
         piece.currentCoord = [nextRow, nextCol];
         return true;
     }
+
     placePieceOnMatrix(piece, currentRow, currentCol);
-    return false;
+    let stop = false;
+    if (isFirstTry) {
+        stop = checkDestinationAndMakeMove(piece, 0, false);
+    }
+    return stop;
 }
 
 function eraseCurrentOccupiedSpace(piece, row, col) {
@@ -166,6 +186,9 @@ function gameLoop() {
     if (isGameOver()) {
         return;
     }
+
+    checkForCompletedLines();
+
     let pieceParamIndex = getRandomInt(PIECE_PARAMETERS.length);
     let piece = tryToPlacePieceAtStart(PIECE_PARAMETERS[pieceParamIndex]);
     makePieceMove(piece);
@@ -178,14 +201,14 @@ function sleep(miliseconds) {
 
 async function timedFunction(fun, arg, delay, frequency, otherFun) {
     let go_on;
+
     for (let i = 0; i < frequency; i++){
+
         await sleep(delay);
         go_on = fun(arg);
+
         if(!go_on) {
-            if (otherFun) {
-                otherFun();
-            }
-            return;
+            return otherFun();
         }
     }
 }
@@ -195,6 +218,34 @@ function isGameOver() {
         if (square.style.backgroundColor != "black") {
             return true;
         }
+    }
+}
+
+function listenToArrows() {
+    document.onkeydown = (e) => {
+        e = e || window.event;
+        if (e.keyCode === 37) {
+            DIRECTION = 1;
+        } else if (e.keyCode === 39) {
+            DIRECTION = 2;
+        }
+    }
+}
+
+function checkForCompletedLines() {
+    for (let index = -1; -index-1 < GLOBAL_MATRIX.length; index--) {
+        for (square of GLOBAL_MATRIX[index]) {
+            if (square.style.backgroundColor === DEFAULT_COLOR) {
+                continue;
+            }
+            clearLineByIndex(index);
+            index++;
+        }
+    }
+}
+
+function clearLineByIndex(index) {
+    for (let innerInd = 0; innerInd < GLOBAL_MATRIX[index].length; innerInd++) {
     }
 }
 

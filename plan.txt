@@ -33,7 +33,6 @@ timed function that works everysecond
                                         (if don't reset player input 
                                         unwanted moves will hapen)
 
-when spawn piece, if it is S, must be 1 square lower
 
 function that checks if line must be gone:
     checks every square for a black piece, if it is black, continue
