@@ -5,12 +5,12 @@ let letterI = {
 }
 
 let letterO = {
-    color: "silver",
+    color: "fushsia",
     coords: [[0, 0], [0, 1], [1, 0], [1, 1]],
 }
 
 let letterL = {
-    color: "lime",
+    color: "olive",
     coords: [[0, 0], [1, 0], [2, 0], [2, 1]],
 }
 
@@ -44,12 +44,7 @@ let PIECE_PARAMETERS = [letterT, letterL, letterS, letterJ, letterI, letterO, le
 function startGameFunction() {
     createTetrisGrid();
     deleteStartButton();
-
-    for (pieceParam of PIECE_PARAMETERS){
-        let piece = tryToPlacePieceAtStart(pieceParam);
-        makePieceMove(piece);
-    }
-    //for (param of PIECE_PARAMETERS) {tryToPlacePieceAtStart(param);}
+    gameLoop();
 }
 
 function createTetrisGrid() {
@@ -80,7 +75,18 @@ function deleteStartButton() {
 function tryToPlacePieceAtStart(pieceParam)
 {
     let piece = Object.create(pieceParam);
+    let col = getRandomInt(10);
 
+    if (canBePlacedInSquare(piece, 0, col)) {
+        placePieceOnMatrix(piece, 0, col);
+        piece.currentCoord = [0, col];
+        return piece;
+    }
+    return alternativeStartPlacement(pieceParam, piece);
+}
+
+function alternativeStartPlacement(pieceParam, piece)
+{
     for (let col = 0; col < 10; col++) {
         if (canBePlacedInSquare(piece, 0, col)) {
             placePieceOnMatrix(piece, 0, col);
@@ -126,14 +132,11 @@ function areRowAndColInRange(row, col) {
 }
 
 function makePieceMove(piece) {
-    for (let count = 0; count < 22; count++){
-        setTimeout(function() {
-            go_on = makeOneMove(piece);
-        }, 1000*count);
-    }
+    timedFunction(makeOneMove, piece, 100, 22, gameLoop);
 }
 
 function makeOneMove(piece) {
+
     let currentRow = piece.currentCoord[0];
     let currentCol = piece.currentCoord[1];
     let nextRow = currentRow + 1;
@@ -156,6 +159,42 @@ function eraseCurrentOccupiedSpace(piece, row, col) {
         coordRow = piece.coords[squareInd][0] + row;
         coordCol = piece.coords[squareInd][1] + col;
         GLOBAL_MATRIX[coordRow][coordCol].style.backgroundColor = DEFAULT_COLOR;
+    }
+}
+
+function gameLoop() {
+    if (isGameOver()) {
+        return;
+    }
+    let pieceParamIndex = getRandomInt(PIECE_PARAMETERS.length);
+    let piece = tryToPlacePieceAtStart(PIECE_PARAMETERS[pieceParamIndex]);
+    makePieceMove(piece);
+}
+
+
+function sleep(miliseconds) {
+    return new Promise(resolve => setTimeout(resolve, miliseconds));
+}
+
+async function timedFunction(fun, arg, delay, frequency, otherFun) {
+    let go_on;
+    for (let i = 0; i < frequency; i++){
+        await sleep(delay);
+        go_on = fun(arg);
+        if(!go_on) {
+            if (otherFun) {
+                otherFun();
+            }
+            return;
+        }
+    }
+}
+
+function isGameOver() {
+    for (square of GLOBAL_MATRIX[0]) {
+        if (square.style.backgroundColor != "black") {
+            return true;
+        }
     }
 }
 
