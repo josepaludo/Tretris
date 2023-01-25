@@ -38,7 +38,6 @@ let GLOBAL_MATRIX = [];
 let DEFAULT_COLOR = "black";
 let PIECE_PARAMETERS = [letterT, letterL, letterS, letterJ, letterI, letterO, letterZ];
 let DIRECTION = 0;
-// 0 = down, 1 = left, 2 = right
 
 
 // Game start
@@ -191,6 +190,7 @@ function gameLoop() {
 
     let pieceParamIndex = getRandomInt(PIECE_PARAMETERS.length);
     let piece = tryToPlacePieceAtStart(PIECE_PARAMETERS[pieceParamIndex]);
+
     makePieceMove(piece);
 }
 
@@ -233,23 +233,39 @@ function listenToArrows() {
 }
 
 function checkForCompletedLines() {
-    for (let index = -1; -index-1 < GLOBAL_MATRIX.length; index--) {
+    let clearLine;
+    for (let index = GLOBAL_MATRIX.length-1; index > 0; index--) {
+        clearLine = true;
         for (square of GLOBAL_MATRIX[index]) {
             if (square.style.backgroundColor === DEFAULT_COLOR) {
-                continue;
+                clearLine = false;
+                break;
             }
+        }
+        if (clearLine) {
+            // problem
+            console.log(index);
             clearLineByIndex(index);
             index++;
         }
     }
 }
 
-function clearLineByIndex(index) {
-    for (let innerInd = 0; innerInd < GLOBAL_MATRIX[index].length; innerInd++) {
+function clearLineByIndex(currentRowIndex) {
+    let lastRowColor;
+    for (let index = currentRowIndex; index > 0; index--) {
+        for (let innerInd = 0; innerInd < 10; innerInd++) {
+            lastRowColor = GLOBAL_MATRIX[index-1][innerInd].style.backgroundColor;
+            GLOBAL_MATRIX[index-1][innerInd].style.backgroundColor = lastRowColor;
+        }
     }
 }
 
 function getRandomInt(range) {
     return Math.floor(Math.random()*range);
+}
+
+function pass() {
+    //pass
 }
 
