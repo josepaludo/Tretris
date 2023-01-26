@@ -233,20 +233,18 @@ function listenToArrows() {
 }
 
 function checkForCompletedLines() {
-    let clearLine;
     for (let index = GLOBAL_MATRIX.length-1; index > 0; index--) {
-        clearLine = true;
-        for (square of GLOBAL_MATRIX[index]) {
-            if (square.style.backgroundColor === DEFAULT_COLOR) {
-                clearLine = false;
-                break;
-            }
+        if (lineHasEmptySquare(index)) {
+            continue;
         }
-        if (clearLine) {
-            // problem
-            console.log(index);
-            clearLineByIndex(index);
-            index++;
+        clearLineByIndex(index);
+    }
+}
+
+function lineHasEmptySquare(index) {
+    for (square of GLOBAL_MATRIX[index]) {
+        if (square.style.backgroundColor === DEFAULT_COLOR) {
+            return true;
         }
     }
 }
@@ -256,7 +254,7 @@ function clearLineByIndex(currentRowIndex) {
     for (let index = currentRowIndex; index > 0; index--) {
         for (let innerInd = 0; innerInd < 10; innerInd++) {
             lastRowColor = GLOBAL_MATRIX[index-1][innerInd].style.backgroundColor;
-            GLOBAL_MATRIX[index-1][innerInd].style.backgroundColor = lastRowColor;
+            GLOBAL_MATRIX[index][innerInd].style.backgroundColor = lastRowColor;
         }
     }
 }
