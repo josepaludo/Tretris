@@ -1,38 +1,68 @@
 :root {
-    --black: rgba(3, 0, 28, 0.9);
-    --lightPurple: rgba(48, 30, 102, 0.9);
+    --black: rgba(3, 0, 28, 0.7);
+    --lightPurple: rgba(48, 30, 102, 1);
     --lightBlue: rgba(91, 143, 185, 1);
-    --lightGreen: rgba(182, 234, 218, 0.9);
+    --lightGreen: rgba(182, 234, 218, 1);
 }
 
 body {
     background-Color: var(--lightPurple);
     font-family: sans-serif;
+    color: var(--lightGreen);
 }
 button{
     display: block;
-    margin: 100px auto;
+    margin: 70px auto;
     border: 0;
     border-radius: 3px;
     font-size: 125%;
     background-color: var(--lightGreen); 
-}
-div {
-    display: flex;
-    justify-content: center;
+    color: var(--black);
 }
 h1 {
+    margin: auto;
     font-size: 350%;
     color: var(--lightBlue);
 }
+hr {
+    font-size: 300%;
+    width: 75%;
+    border-color: var(--lightGreen);
+}
 #tetrisContainerDiv {
-    margin: 50px auto;
-    display: grid;
+    display: none;
     height: 700px;
     width: 350px;
     grid-template-columns: repeat(10, 1fr);
+    color: silver;
+}
+#statusDiv {
+    width: 300px;
+    display: none; 
+    margin: 0 0 0 50px;
+}
+#titleDiv {
+    margin: 50px;
+}
+#statusAndGameContainerDiv {
+    margin-top: 50px;
+}
+#statusDiv, #announceDiv, #endGameDiv, #divToBeDeleted {
+    flex-direction: column;
+    align-items: center;
+}
+#divToBeDeleted {
+    font-size: 125%;
+}
+#titleH1 {
+    display: block;
+    margin: 50px auto;
 }
 .tetrisBodyDiv {
     border: outset;
+}
+.genericDiv {
+    display: flex;
+    justify-content: center;
 }
 

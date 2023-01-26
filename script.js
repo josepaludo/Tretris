@@ -36,22 +36,34 @@ let letterT = {
 
 const DEFAULT_COLOR = "black";
 const PIECE_PARAMETERS = [letterT, letterL, letterS, letterJ, letterI, letterO, letterZ];
+let DELAY = 500;
+let CONTINUE_TIMER = true;
 let BACK_TRACK, GAME_OVER_SOUND, NEW_SHAPE_SOUND;
 let GLOBAL_MATRIX = [];
 let DIRECTION = 0;
+let TOTAL_PIECES = 0;
+let TOTAL_POINTS = 0;
+let MS = 0;
+let SS = 0;
+let MM = 0;
+let TIME;
 
 
 function startGameFunction() {
     createTetrisGrid();
-    deleteStartButton();
+    deleteStartElements();
     listenToArrows();
     addAudio();
+    showStatusDiv();
+    tikTimer();
     gameLoop();
 }
 
 function createTetrisGrid() {
     let containerDiv = document.getElementById("tetrisContainerDiv");
     let row, div;
+
+    containerDiv.style.display = "grid";
 
     for (let row_ind  = 0; row_ind < 20; row_ind++)
     {
@@ -69,7 +81,9 @@ function createTetrisGrid() {
 
 }
 
-function deleteStartButton() {
+function deleteStartElements() {
+    document.getElementById("divToBeDeleted").style.display = "none";
+    document.getElementById("startAndEndUL").remove();
     document.getElementById("startGameButton").remove();
 }
 
@@ -132,7 +146,8 @@ function areRowAndColInRange(row, col) {
 }
 
 function makePieceMove(piece) {
-    timedFunction(makeOneMove, piece, 500, 22, gameLoop);
+    DELAY *= 0.99;
+    timedFunction(makeOneMove, piece, DELAY, 22, gameLoop);
 }
 
 function makeOneMove(piece)
@@ -226,6 +241,7 @@ function gameLoop() {
         endGameFunction();
         return;
     }
+    TOTAL_PIECES += 1;
 
     checkForCompletedLines();
 
@@ -233,6 +249,8 @@ function gameLoop() {
     let piece = tryToPlacePieceAtStart(PIECE_PARAMETERS[pieceParamIndex]);
 
     NEW_SHAPE_SOUND.play();
+
+    updateStatus();
 
     makePieceMove(piece);
 }
@@ -264,6 +282,7 @@ function isGameOver() {
 function listenToArrows() {
     document.onkeydown = (e) => {
         e = e || window.event;
+
         switch (e.keyCode) {
             case 37:
             case 65:
@@ -290,6 +309,7 @@ function checkForCompletedLines() {
         if (lineHasEmptySquare(index)) {
             continue;
         }
+        TOTAL_POINTS += 10;
         clearLineByIndex(index);
     }
 }
@@ -329,6 +349,66 @@ function addAudio() {
 function endGameFunction() {
     BACK_TRACK.pause();
     GAME_OVER_SOUND.play();
+    CONTINUE_TIMER = false;
+    alertPlayerToRestart();
+}
+
+function showStatusDiv() {
+    document.getElementById("statusDiv").style.display = "flex";
+}
+
+function updateStatus() {
+    let piecesH1 = document.getElementById("pieces");
+    piecesH1.innerHTML = TOTAL_PIECES;
+
+    let pointH1 = document.getElementById("points");
+    pointH1.innerHTML = TOTAL_POINTS;
+}
+
+function tikTimer() {
+    
+    MS += 100;
+
+    if (MS === 1000) {
+        MS = 0;
+        SS += 1;
+    }
+    if (SS === 60) {
+        SS = 0;
+        MM += 1;
+    }
+
+    if (MM < 10) {
+        time = `0${MM}`;
+    } else {
+        time = MM;
+    }
+
+    if (SS < 10) {
+        time += `:0${SS}:`;
+    } else {
+        time += `:${SS}:`;
+    }
+
+    time += `${MS/100}0`;
+
+    if (CONTINUE_TIMER) {
+        document.getElementById("timer").innerText = time; 
+        setTimeout(function(){ tikTimer() }, 100);
+    }
+}
+
+function alertPlayerToRestart() {
+    document.getElementById("divToBeDeleted").style.display = "flex";
+
+    let H2 = document.getElementById("startAndEndH2");
+    H2.innerHTML = "Congratulations!!!";
+
+    let H4 = document.getElementById("startAndEndH4");
+    H4.innerHTML = "Stare at your final score as long as you like!!!";
+
+    let H5 = document.getElementById("startAndEndH5");
+    H5.innerHTML = "Refresh the page to play again.";
 }
 
 function getRandomInt(range) {
