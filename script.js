@@ -34,13 +34,11 @@ let letterT = {
     coords: [[0, 0], [0, 1], [0, 2], [1, 1]],
 }
 
+const DEFAULT_COLOR = "black";
+const PIECE_PARAMETERS = [letterT, letterL, letterS, letterJ, letterI, letterO, letterZ];
 let GLOBAL_MATRIX = [];
-let DEFAULT_COLOR = "black";
-let PIECE_PARAMETERS = [letterT, letterL, letterS, letterJ, letterI, letterO, letterZ];
 let DIRECTION = 0;
 
-
-// Game start
 
 function startGameFunction() {
     createTetrisGrid();
@@ -51,14 +49,14 @@ function startGameFunction() {
 
 function createTetrisGrid() {
     let containerDiv = document.getElementById("tetrisContainerDiv");
+    let row, div;
 
     for (let row_ind  = 0; row_ind < 20; row_ind++)
     {
-        let row = [];
-
+        row = [];
         for (let col_ind = 0; col_ind < 10; col_ind++)
         {
-            let div = document.createElement("div");
+            div = document.createElement("div");
             div.classList.add("tetrisBodyDiv");
             div.style.backgroundColor = DEFAULT_COLOR;
             containerDiv.appendChild(div);
@@ -70,8 +68,7 @@ function createTetrisGrid() {
 }
 
 function deleteStartButton() {
-    let startButton = document.getElementById("startGameButton");
-    startButton.remove();
+    document.getElementById("startGameButton").remove();
 }
 
 function tryToPlacePieceAtStart(pieceParam)
@@ -130,7 +127,6 @@ function areRowAndColInRange(row, col) {
     if (isRowInRange && isColInRange){
         return true;
     }
-    return false;
 }
 
 function makePieceMove(piece) {
@@ -139,16 +135,21 @@ function makePieceMove(piece) {
 
 function makeOneMove(piece)
 {
-    if (DIRECTION === 0) {
-        return checkDestinationAndMakeMove(piece, 0, false);
-    } else if (DIRECTION === 1) {
-        return checkDestinationAndMakeMove(piece, -1, true);
-    } else if (DIRECTION === 2) {
-        return checkDestinationAndMakeMove(piece, 1, true);
+    switch (DIRECTION) {
+        case 0:
+            return checkDestinationAndMakeMove(piece, 0, false);
+        case 1:
+            return checkDestinationAndMakeMove(piece, -1, true);
+        case 2:
+            return checkDestinationAndMakeMove(piece, 1, true);
+        case 3:
+            return rotateAndMove(piece);
+        case 4:
+            return moveDownTwice(piece);
     }
 }
 
-function checkDestinationAndMakeMove(piece, colAdd, isFirstTry)
+function checkDestinationAndMakeMove(piece, colAdd, isFirstTry, isRotation=false)
 {
     DIRECTION = 0;
     let currentRow = piece.currentCoord[0];
@@ -163,8 +164,9 @@ function checkDestinationAndMakeMove(piece, colAdd, isFirstTry)
         piece.currentCoord = [nextRow, nextCol];
         return true;
     }
-
-    placePieceOnMatrix(piece, currentRow, currentCol);
+    if (!isRotation) {
+        placePieceOnMatrix(piece, currentRow, currentCol);
+    }
     let stop = false;
     if (isFirstTry) {
         stop = checkDestinationAndMakeMove(piece, 0, false);
@@ -178,6 +180,42 @@ function eraseCurrentOccupiedSpace(piece, row, col) {
         coordRow = piece.coords[squareInd][0] + row;
         coordCol = piece.coords[squareInd][1] + col;
         GLOBAL_MATRIX[coordRow][coordCol].style.backgroundColor = DEFAULT_COLOR;
+    }
+}
+
+function rotateAndMove(piece) {
+    let currentRow = piece.currentCoord[0];
+    let currentCol = piece.currentCoord[1];
+
+    let currentCoords = [];
+    Object.assign(currentCoords, piece.coords);
+    eraseCurrentOccupiedSpace(piece, currentRow, currentCol);
+
+    piece.coords = getRotatedCoords(piece);
+
+    if (canBePlacedInSquare(piece, currentRow, currentCol)) {
+        if (checkDestinationAndMakeMove(piece, 0, false, true)) {
+            return true;
+        }
+    }
+    piece.coords = currentCoords;
+    return checkDestinationAndMakeMove(piece, 0, false);
+}
+
+function getRotatedCoords(piece) {
+    let rotatedCoord;
+    let rotatedCoords = [];
+    for (coord of piece.coords) {
+        // maybe error
+        rotatedCoord = [coord[1], -coord[0]]
+        rotatedCoords.push(rotatedCoord);
+    }
+    return rotatedCoords;
+}
+
+function moveDownTwice(piece) {
+    if (checkDestinationAndMakeMove(piece, 0, false)) {
+    return checkDestinationAndMakeMove(piece, 0, false);
     }
 }
 
@@ -224,10 +262,23 @@ function isGameOver() {
 function listenToArrows() {
     document.onkeydown = (e) => {
         e = e || window.event;
-        if (e.keyCode === 37) {
-            DIRECTION = 1;
-        } else if (e.keyCode === 39) {
-            DIRECTION = 2;
+        switch (e.keyCode) {
+            case 37:
+            case 65:
+                DIRECTION = 1;
+                break;
+            case 38:
+            case 87:
+                DIRECTION = 3;
+                break;
+            case 39:
+            case 68:
+                DIRECTION = 2;
+                break;
+            case 40:
+            case 83:
+                DIRECTION = 4;
+                break;
         }
     }
 }
@@ -261,9 +312,5 @@ function clearLineByIndex(currentRowIndex) {
 
 function getRandomInt(range) {
     return Math.floor(Math.random()*range);
-}
-
-function pass() {
-    //pass
 }
 

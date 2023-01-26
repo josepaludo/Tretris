@@ -1,44 +1,29 @@
-grid of 30(row)x20(col)
-tetris pieces are colored divs with 0 margin but can have a border
-background is black
+how to rotate a piece clockwise? (button up)
 
-function that makes the piece move:
-    function that checks if next square is valid:
-        for every coord in piece:
-            currentSquare = MATRIX[coord[0]+1]
+get Z f.ex.
+    0, 0 / 0, 1 / 1, 1/ 1, 2
+    0, 0 / 1, 0 / 1, -1/ 2, -1
 
-            if coord[row] +1 > 20:
-                return false (that is, can't move anymore)
-            if goingSideways:
-                if 0 > coord[col] > 19:
-                    return false
+    inverted = [col, -row], [col, -row], [col, -row], [col, -row]
 
-            if currentSquare.color != self.color:
-                return false (that is, can't move anymore)
-            if currentSquare.color == black:
-                continue
-            if coord in self.coords:
-                continue
+    0, 0 / 0, -1 / -1, -1 / -1, -2
+    0, 0 / -1, 0 / -1, 1 / -2, 
 
-    for every square in coords:
-        coord = black
-    for  every square in coords:
-        coord + 1 //that is, row// = self.color
+get S f. ex
+    1, 0 / 1, 1 / 0, 1 / 0, 2
+    0, -1 / 1, -1 / 1, 0 / 2, 0
 
-timed function that works everysecond
-    between the functions, player can input a diectional value (left, right)
-                                            or rotation(true)
-    when function ticks, checks if destination is clear or not
-                            if it is, move everypiece, then reset player input
-                                        (if don't reset player input 
-                                        unwanted moves will hapen)
+    inverted = [col, -row], [col, -row], [col, -row], [col, -row]
+
+get I
+
+    0, 0 / 1, 0 / 2, 0 / 3, 0
+    0, 0 / 0, -1/ 0, -2 / 0, -3
+
+    inverted = [col, -row], [col, -row], [col, -row], [col, -row]
 
 
-function that checks if line must be gone:
-    checks every square for a black piece, if it is black, continue
-                                           if none is black:
 
-    for every line above it, line == line before it, if ind == 0, continue
-
-function that checks if game is over:
-    if nonblacksquare in 0 (other than spawn), if can't spawn
+make piece disapear
+check if rotated and moved piece can be placed
+rotate piece and move
