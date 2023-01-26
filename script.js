@@ -34,9 +34,9 @@ let letterT = {
     coords: [[0, 0], [0, 1], [0, 2], [1, 1]],
 }
 
-let BACK_TRACK, GAME_OVER_SOUND, NEW_SHAPE_SOUND;
 const DEFAULT_COLOR = "black";
 const PIECE_PARAMETERS = [letterT, letterL, letterS, letterJ, letterI, letterO, letterZ];
+let BACK_TRACK, GAME_OVER_SOUND, NEW_SHAPE_SOUND;
 let GLOBAL_MATRIX = [];
 let DIRECTION = 0;
 
@@ -315,9 +315,11 @@ function clearLineByIndex(currentRowIndex) {
 function addAudio() {
     BACK_TRACK = new Audio("assets/beat.m4a");
     BACK_TRACK.loop = true;
+    BACK_TRACK.volume *= 0.25;
     BACK_TRACK.play();
 
     NEW_SHAPE_SOUND = new Audio("assets/newshape.wav");
+    NEW_SHAPE_SOUND.volume *= 0.5;
     NEW_SHAPE_SOUND.loop = false;
 
     GAME_OVER_SOUND = new Audio("assets/gameover.wav");
