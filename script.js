@@ -34,6 +34,7 @@ let letterT = {
     coords: [[0, 0], [0, 1], [0, 2], [1, 1]],
 }
 
+let BACK_TRACK, GAME_OVER_SOUND, NEW_SHAPE_SOUND;
 const DEFAULT_COLOR = "black";
 const PIECE_PARAMETERS = [letterT, letterL, letterS, letterJ, letterI, letterO, letterZ];
 let GLOBAL_MATRIX = [];
@@ -44,6 +45,7 @@ function startGameFunction() {
     createTetrisGrid();
     deleteStartButton();
     listenToArrows();
+    addAudio();
     gameLoop();
 }
 
@@ -221,6 +223,7 @@ function moveDownTwice(piece) {
 
 function gameLoop() {
     if (isGameOver()) {
+        endGameFunction();
         return;
     }
 
@@ -229,13 +232,12 @@ function gameLoop() {
     let pieceParamIndex = getRandomInt(PIECE_PARAMETERS.length);
     let piece = tryToPlacePieceAtStart(PIECE_PARAMETERS[pieceParamIndex]);
 
+    NEW_SHAPE_SOUND.play();
+
     makePieceMove(piece);
 }
 
 
-function sleep(miliseconds) {
-    return new Promise(resolve => setTimeout(resolve, miliseconds));
-}
 
 async function timedFunction(fun, arg, delay, frequency, otherFun) {
     let go_on;
@@ -310,7 +312,27 @@ function clearLineByIndex(currentRowIndex) {
     }
 }
 
+function addAudio() {
+    BACK_TRACK = new Audio("assets/beat.m4a");
+    BACK_TRACK.loop = true;
+    BACK_TRACK.play();
+
+    NEW_SHAPE_SOUND = new Audio("assets/newshape.wav");
+    NEW_SHAPE_SOUND.loop = false;
+
+    GAME_OVER_SOUND = new Audio("assets/gameover.wav");
+    GAME_OVER_SOUND.loop = false;
+}
+
+function endGameFunction() {
+    BACK_TRACK.pause();
+    GAME_OVER_SOUND.play();
+}
+
 function getRandomInt(range) {
     return Math.floor(Math.random()*range);
 }
 
+function sleep(miliseconds) {
+    return new Promise(resolve => setTimeout(resolve, miliseconds));
+}
