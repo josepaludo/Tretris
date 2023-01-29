@@ -1,4 +1,4 @@
-# TETRIS
+# TRETRIS
 
 [Game-Over sound](https://freesound.org/people/deleted_user_877451/sounds/76376/)<br />
 [New Shape sound](https://freesound.org/people/Kodack/sounds/258020/)<br />

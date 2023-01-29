@@ -335,7 +335,7 @@ function clearLineByIndex(currentRowIndex) {
 function addAudio() {
     BACK_TRACK = new Audio("assets/beat.m4a");
     BACK_TRACK.loop = true;
-    BACK_TRACK.volume *= 0.25;
+    BACK_TRACK.volume *= 0.4;
     BACK_TRACK.play();
 
     NEW_SHAPE_SOUND = new Audio("assets/newshape.wav");
