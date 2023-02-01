@@ -1,33 +1,34 @@
 :root {
-    --black: rgba(3, 0, 28, 0.7);
-    --lightPurple: rgba(48, 30, 102, 1);
-    --lightBlue: rgba(91, 143, 185, 1);
-    --lightGreen: rgba(182, 234, 218, 1);
+    --almost-black: #20262E;
+    --purple: #913175;
+    --pink: #CD5888;
+    --ice: #E9E8E8;
 }
 
 body {
-    background-Color: var(--lightPurple);
+    background-Color: var(--purple);
     font-family: sans-serif;
-    color: var(--lightGreen);
+    color: var(--ice);
 }
 button{
     display: block;
     margin: 70px auto;
+    padding: 5px;
     border: 0;
     border-radius: 3px;
     font-size: 125%;
-    background-color: var(--lightGreen); 
-    color: var(--black);
+    background-color: var(--pink); 
+    color: var(--ice);
 }
 h1 {
     margin: auto;
     font-size: 350%;
-    color: var(--lightBlue);
+    color: var(--ice);
 }
 hr {
     font-size: 300%;
     width: 75%;
-    border-color: var(--lightGreen);
+    border-color: var(--pink);
 }
 #tetrisContainerDiv {
     display: none;
